@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
+	"os"
 )
 
 type IndexData struct {
@@ -23,6 +25,18 @@ func index(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonStr)
 }
 
+func indexHtml(w http.ResponseWriter, r *http.Request) {
+	var indexData IndexData
+	indexData.Title = "go Blog"
+	indexData.Desc = "first"
+	t := template.New("index.html")
+	// 解析檔案
+	path, _ := os.Getwd()
+	t, _ = t.ParseFiles(path + "/template/index.html")
+	t.Execute(w, indexData)
+
+}
+
 func main() {
 
 	// 設定路徑 server
@@ -32,6 +46,7 @@ func main() {
 
 	// 響應 request
 	http.HandleFunc("/", index)
+	http.HandleFunc("/index.html", indexHtml)
 
 	if err := server.ListenAndServe(); err != nil {
 		log.Println(err)
