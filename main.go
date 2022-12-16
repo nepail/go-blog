@@ -32,7 +32,11 @@ func indexHtml(w http.ResponseWriter, r *http.Request) {
 	t := template.New("index.html")
 	// 解析檔案
 	path, _ := os.Getwd()
-	t, _ = t.ParseFiles(path + "/template/index.html")
+	// 因為首頁有多個template嵌套, 所以需要將涉及到的template都進行解析
+	home := path + "/template/home.html"
+	header := path + "/template/header.html"
+	footer := path + "/template/footer.html"
+	t, _ = t.ParseFiles(path+"/template/index.html", home, header, footer)
 	t.Execute(w, indexData)
 
 }
